@@ -18,15 +18,15 @@ export default function HomePage() {
 
       if (!res.ok) {
         console.error("send-today error response:", data);
-        alert(data?.error ?? "Erro ao enviar newsletter");
+        alert(data?.error ?? "Error while sending newsletter");
         return;
       }
 
       console.log("send-today response", data);
-      alert(`Newsletter enviada! (${data.sent ?? 0} inscrito(s))`);
+      alert(`Newsletter sent! (${data.sent ?? 0} subscriber(s))`);
     } catch (error) {
       console.error(error);
-      alert("Erro ao enviar newsletter (veja o console e o terminal)");
+      alert("Error sending newsletter (check console and terminal)");
     }
   }
 
@@ -41,7 +41,7 @@ export default function HomePage() {
         body: JSON.stringify({ email }),
       });
 
-      if (!res.ok) throw new Error("Erro ao enviar");
+      if (!res.ok) throw new Error("Error subscribing");
 
       setStatus("success");
       setEmail("");
@@ -54,11 +54,11 @@ export default function HomePage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">
       <div className="max-w-md w-full p-8 rounded-2xl bg-slate-900/70 border border-slate-800">
-        <h1 className="text-2xl font-semibold mb-2">Quotes Newsletter </h1>
+        <h1 className="text-2xl font-semibold mb-2">Quotes Newsletter</h1>
 
         <p className="text-sm text-slate-300 mb-4">
-          Receive an inspiring phrase daily directly in your email. No spam,
-          just a moment of respite ✨
+          Receive an inspiring phrase daily directly in your email. No spam—just
+          a moment of respite ✨
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -95,7 +95,7 @@ export default function HomePage() {
           onClick={handleSendToday}
           className="mt-4 w-full py-2 rounded-lg text-xs text-slate-300 border border-slate-600 hover:bg-slate-800 transition"
         >
-          Enviar newsletter de hoje (dev)
+          Send today's newsletter (dev)
         </button>
       </div>
     </main>

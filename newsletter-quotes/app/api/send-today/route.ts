@@ -11,12 +11,12 @@ async function getTodayQuote() {
   const apiKey = process.env.NINJAS_API_KEY;
 
   if (!apiKey) {
-    throw new Error('NINJAS_API_KEY não configurada');
+    throw new Error('NINJAS_API_KEY is not configured');
   }
 
   console.log('🔹 NINJAS_API_KEY prefix:', apiKey.slice(0, 6));
 
-  // 👇 ATUALIZA AQUI: usa v2/quoteoftheday, sem query string
+  // Using API Ninjas v2 — no query string required
   const res = await fetch('https://api.api-ninjas.com/v2/quoteoftheday', {
     headers: {
       'X-Api-Key': apiKey,
@@ -30,57 +30,58 @@ async function getTodayQuote() {
     const text = await res.text();
     console.error('❌ API Ninjas ERROR body:', text);
     throw new Error(
-      `Falha ao buscar quote na API Ninjas (status ${res.status})`
+      `Failed to fetch quote from API Ninjas (status ${res.status})`
     );
   }
 
   const data = (await res.json()) as QuoteApiResponse[];
 
   if (!data[0]) {
-    throw new Error('Nenhuma quote retornada');
+    throw new Error('No quote returned from API');
   }
 
-  console.log('✅ Quote recebida:', data[0]);
+  console.log('✅ Quote received:', data[0]);
   return data[0];
 }
-
 
 export async function POST() {
   try {
     if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
-      throw new Error('Env RESEND_API_KEY ou NEWSLETTER_FROM não configuradas');
+      throw new Error('RESEND_API_KEY or NEWSLETTER_FROM is not configured');
     }
 
-    // Busca inscritos
+    // Fetch subscribers
     const subscribers = await prisma.subscriber.findMany();
 
     if (!subscribers.length) {
       return NextResponse.json(
-        { ok: true, sent: 0, message: 'Nenhum inscrito para enviar' },
+        { ok: true, sent: 0, message: 'No subscribers to send to' },
         { status: 200 }
       );
     }
 
-    // Busca quote do dia
+    // Fetch quote of the day
     const { quote, author } = await getTodayQuote();
 
-    const subject = 'Quote do dia ✨';
+    const subject = 'Quote of the Day ✨';
 
     const html = (email: string) => `
       <div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px;">
-        <p style="font-size: 14px; color: #64748b;">Oi ${email},</p>
+        <p style="font-size: 14px; color: #64748b;">Hi ${email},</p>
         <p style="font-size: 16px; margin-top: 16px; margin-bottom: 8px;">
           <em>"${quote}"</em>
         </p>
-        <p style="font-size: 14px; color: #94a3b8;">— ${author || 'Autor desconhecido'}</p>
+        <p style="font-size: 14px; color: #94a3b8;">— ${
+          author || 'Unknown author'
+        }</p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e2e8f0;" />
         <p style="font-size: 12px; color: #94a3b8;">
-          Você recebeu esta mensagem por estar inscrita(o) na Quotes Newsletter.
+          You received this email because you are subscribed to the Quotes Newsletter.
         </p>
       </div>
     `;
 
-    // Cria o client do Resend aqui dentro (evita erro em module load)
+    // Create Resend client inside POST (avoids module-load issues)
     const resend = new Resend(process.env.RESEND_API_KEY as string);
 
     await Promise.all(
@@ -98,7 +99,7 @@ export async function POST() {
   } catch (error: any) {
     console.error('send-today error:', error);
     return NextResponse.json(
-      { error: error?.message || 'Erro desconhecido' },
+      { error: error?.message || 'Unknown error' },
       { status: 500 }
     );
   }
