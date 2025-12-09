@@ -16,15 +16,13 @@ async function getTodayQuote() {
 
   console.log('🔹 NINJAS_API_KEY prefix:', apiKey.slice(0, 6));
 
-  const res = await fetch(
-    'https://api.api-ninjas.com/v1/quotes?category=inspirational',
-    {
-      headers: {
-        'X-Api-Key': apiKey,
-      },
-      cache: 'no-store',
-    }
-  );
+  // 👇 ATUALIZA AQUI: usa v2/quoteoftheday, sem query string
+  const res = await fetch('https://api.api-ninjas.com/v2/quoteoftheday', {
+    headers: {
+      'X-Api-Key': apiKey,
+    },
+    cache: 'no-store',
+  });
 
   console.log('🔹 API Ninjas status:', res.status);
 
@@ -45,6 +43,7 @@ async function getTodayQuote() {
   console.log('✅ Quote recebida:', data[0]);
   return data[0];
 }
+
 
 export async function POST() {
   try {
