@@ -8,6 +8,28 @@ export default function HomePage() {
     "idle" | "loading" | "success" | "error"
   >("idle");
 
+  async function handleSendToday() {
+    try {
+      const res = await fetch("/api/send-today", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("send-today error response:", data);
+        alert(data?.error ?? "Erro ao enviar newsletter");
+        return;
+      }
+
+      console.log("send-today response", data);
+      alert(`Newsletter enviada! (${data.sent ?? 0} inscrito(s))`);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao enviar newsletter (veja o console e o terminal)");
+    }
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
@@ -67,6 +89,14 @@ export default function HomePage() {
             Error subscribing. Try again later!
           </p>
         )}
+
+        <button
+          type="button"
+          onClick={handleSendToday}
+          className="mt-4 w-full py-2 rounded-lg text-xs text-slate-300 border border-slate-600 hover:bg-slate-800 transition"
+        >
+          Enviar newsletter de hoje (dev)
+        </button>
       </div>
     </main>
   );
