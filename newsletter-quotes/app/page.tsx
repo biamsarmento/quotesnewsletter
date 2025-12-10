@@ -94,13 +94,13 @@ export default function HomePage() {
         <h3
           className={`${garet.className} [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21] text-md md:text-xl`}
         >
-          "The best way to get started is to quit talking and begin doing." -
-          Walt Disney
+          &quot;The best way to get started is to quit talking and begin
+          doing.&quot; - Walt Disney
         </h3>
         <div className="subscribe flex flex-col mb-10">
           <div className="max-w-lg w-full p-8 rounded-[50px] bg-[#402d21] border border-[#75564d]">
             <h1
-              className={`${gagalin.className} text-4xl font-semibold mb-4 justify-self-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
+              className={`${gagalin.className} text-2xl sm:text-4xl font-semibold mb-4 justify-self-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
             >
               Subscribe
             </h1>
@@ -122,7 +122,7 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className={`${garetBold.className} w-full py-2 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] border border-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
+                className={`${garetBold.className} w-full py-2 px-4 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] border border-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
               >
                 {status === "loading" ? "Subscribing..." : "Subscribe"}
               </button>
@@ -142,7 +142,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={handleSendToday}
-              className={`${garetBold.className} mt-4 w-full py-2 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#402d21] hover:border-[#75564d] border border-transparent transition`}
+              className={`${garetBold.className} mt-4 w-full py-2 px-4 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#402d21] hover:border-[#75564d] border border-transparent transition`}
             >
               Send today&apos;s newsletter (dev)
             </button>

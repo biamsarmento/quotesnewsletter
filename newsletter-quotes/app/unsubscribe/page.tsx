@@ -56,7 +56,6 @@ export default function UnsubscribePage() {
         backgroundBlendMode: "luminosity",
       }}
     >
-      {/* Logo, igual à home */}
       <div className="header flex self-center md:self-start gap-2">
         <Image
           src="/logo-beige-blue.png"
@@ -66,7 +65,6 @@ export default function UnsubscribePage() {
         />
       </div>
 
-      {/* Título e texto explicativo */}
       <div className="flex flex-col items-center justify-center p-4">
         <h1
           className={`${garetBold.className} text-[#f8eade] text-3xl md:text-5xl text-center mb-5 [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
@@ -86,12 +84,12 @@ export default function UnsubscribePage() {
         <h3
           className={`${garet.className} [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21] text-md md:text-xl`}
         >
-          "There is no real ending. It's just the place where you stop the
-          story." - Frank Herbert
+          &quot;There is no real ending. It&apos;s just the place where you stop
+          the story.&quot; - Frank Herbert
         </h3>
         <div className="max-w-lg w-full p-8 rounded-[50px] bg-[#402d21] border border-[#75564d]">
           <h2
-            className={`${gagalin.className} text-4xl font-semibold mb-4 text-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
+            className={`${gagalin.className} text-2xl sm:text-4xl font-semibold mb-4 text-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
           >
             Unsubscribe
           </h2>
@@ -114,7 +112,7 @@ export default function UnsubscribePage() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className={`${garetBold.className} w-full py-2 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] border border-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
+              className={`${garetBold.className} w-full py-2 px-4 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] border border-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
             >
               {status === "loading" ? "Unsubscribing..." : "Unsubscribe"}
             </button>
