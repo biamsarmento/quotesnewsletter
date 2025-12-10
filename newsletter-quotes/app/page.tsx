@@ -90,7 +90,7 @@ export default function HomePage() {
         </h2>
       </div>
 
-      <div className="flex flex-col items-center justify-center px-10 md:px-20 pb-10 md:pb-20 pt-10 text-[#f8eade] bg-[#75564d] border-2 border-[#402d21] rounded-t-[50px] flex-1 rounded-b-none gap-10">
+      <div className="flex flex-col items-center justify-center px-10 md:px-20 pb-10 md:pb-20 pt-10 text-[#f8eade] bg-[#75564d]/70 border-2 border-[#402d21] rounded-t-[50px] flex-1 rounded-b-none gap-10">
         <h3
           className={`${garet.className} [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21] text-md md:text-xl`}
         >
@@ -98,7 +98,7 @@ export default function HomePage() {
           Walt Disney
         </h3>
         <div className="subscribe flex flex-col mb-10">
-          <div className="max-w-lg w-full p-8 rounded-[50px] bg-[#402d21]/70 border border-[#75564d]">
+          <div className="max-w-lg w-full p-8 rounded-[50px] bg-[#402d21] border border-[#75564d]">
             <h1
               className={`${gagalin.className} text-4xl font-semibold mb-4 justify-self-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
             >
@@ -122,19 +122,19 @@ export default function HomePage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className={`${garetBold.className} w-full py-2 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
+                className={`${garetBold.className} w-full py-2 rounded-lg cursor-pointer text-[#f8eade] text-sm font-medium bg-[#6f8ca4] border border-[#6f8ca4] hover:bg-[#203a58] disabled:opacity-60 disabled:cursor-not-allowed transition [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
               >
                 {status === "loading" ? "Subscribing..." : "Subscribe"}
               </button>
             </form>
 
             {status === "success" && (
-              <p className="mt-3 text-xs text-emerald-400">
-                🎉 You have subscribed! Stay tuned...
+              <p className={`${garet.className} mt-3 text-xs text-emerald-400`}>
+                🎉 You have been subscribed! Stay tuned for your first quote...
               </p>
             )}
             {status === "error" && (
-              <p className="mt-3 text-xs text-red-400">
+              <p className={`${garet.className} mt-3 text-xs text-red-400`}>
                 Error subscribing. Try again later!
               </p>
             )}
@@ -142,7 +142,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={handleSendToday}
-              className={`${garetBold.className} mt-4 w-full py-2 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#402d21] hover:border-[#75564d] border border-[#402d21] transition`}
+              className={`${garetBold.className} mt-4 w-full py-2 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#402d21] hover:border-[#75564d] border border-transparent transition`}
             >
               Send today&apos;s newsletter (dev)
             </button>
