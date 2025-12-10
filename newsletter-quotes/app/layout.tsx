@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { gagalin, newYorker, garet, garetBold } from "./fonts";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+// const gagalin = localFont({
+//   src: "./fonts/Gagalin-Regular.otf",
+//   variable: "--font-gagalin",
+//   weight: "400",
+// });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const newYorker = localFont({
+//   src: "./fonts/ACaslonPro-Regular.otf",
+//   variable: "--font-new-yorker",
+//   weight: "400",
+// });
+
+// const garet = localFont({
+//   src: "./fonts/Spacetype-GaretBook.otf",
+//   variable: "--font-garet",
+//   weight: "400",
+// });
 
 export const metadata: Metadata = {
   title: "Quotes Newsletter",
@@ -23,12 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${gagalin.variable} ${newYorker.variable} ${garetBold.variable}`}
+    >
+      <body className={`${garet.variable} antialiased`}>{children}</body>
     </html>
   );
 }
