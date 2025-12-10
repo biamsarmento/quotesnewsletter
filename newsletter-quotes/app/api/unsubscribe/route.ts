@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+// GET → usado pelo link do e-mail: /api/unsubscribe?email=...
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get('email');
@@ -15,7 +16,6 @@ export async function GET(req: Request) {
       data: { unsubscribedAt: new Date() },
     });
 
-    // resposta simples em HTML
     return new NextResponse(
       `
       <html>
@@ -34,7 +34,34 @@ export async function GET(req: Request) {
       }
     );
   } catch (err) {
-    console.error('Unsubscribe error:', err);
+    console.error('Unsubscribe GET error:', err);
     return new NextResponse('Error while unsubscribing', { status: 500 });
+  }
+}
+
+// POST → usado pela página /unsubscribe (JSON: { email })
+export async function POST(req: Request) {
+  try {
+    const { email } = await req.json();
+
+    if (!email || typeof email !== 'string') {
+      return NextResponse.json(
+        { error: 'Invalid email address' },
+        { status: 400 }
+      );
+    }
+
+    await prisma.subscriber.updateMany({
+      where: { email },
+      data: { unsubscribedAt: new Date() },
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error('Unsubscribe POST error:', err);
+    return NextResponse.json(
+      { error: 'Error while unsubscribing' },
+      { status: 500 }
+    );
   }
 }
