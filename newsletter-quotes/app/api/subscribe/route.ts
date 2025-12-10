@@ -1,3 +1,4 @@
+// app/api/subscribe/route.ts
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { prisma } from '@/lib/prisma';
@@ -9,18 +10,25 @@ export async function POST(req: Request) {
     const { email } = await req.json();
 
     if (!email || typeof email !== 'string') {
-      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid email address' },
+        { status: 400 }
+      );
     }
 
     if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
-      throw new Error('Env RESEND_API_KEY or NEWSLETTER_FROM not workiing');
+      throw new Error('Env RESEND_API_KEY or NEWSLETTER_FROM not working');
     }
 
-    // salva (ou reaproveita se já existir)
+    // ✅ se já existir, só "reativa" (unsubscribedAt = null)
     await prisma.subscriber.upsert({
       where: { email },
-      update: {},
-      create: { email },
+      update: {
+        unsubscribedAt: null,
+      },
+      create: {
+        email,
+      },
     });
 
     await resend.emails.send({
