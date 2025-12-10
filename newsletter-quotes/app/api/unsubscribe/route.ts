@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Resend } from 'resend';
 
-// GET → usado pelo link do e-mail: /api/unsubscribe?email=...
+const resend = new Resend(process.env.RESEND_API_KEY || '');
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const email = searchParams.get('email');
@@ -15,6 +17,25 @@ export async function GET(req: Request) {
       where: { email },
       data: { unsubscribedAt: new Date() },
     });
+
+    if (process.env.RESEND_API_KEY && process.env.NEWSLETTER_FROM) {
+      try {
+        await resend.emails.send({
+          from: process.env.NEWSLETTER_FROM!,
+          to: email,
+          subject: 'You have been unsubscribed ✨',
+          html: `
+            <p>Hi ${email},</p>
+            <p>You have been successfully unsubscribed from Quotes Newsletter.</p>
+            <p style="font-size:12px;color:#64748b">
+              If this was a mistake, you can subscribe again anytime on our website.
+            </p>
+          `,
+        });
+      } catch (err) {
+        console.error('Failed to send unsubscribe confirmation (GET):', err);
+      }
+    }
 
     return new NextResponse(
       `
@@ -39,7 +60,6 @@ export async function GET(req: Request) {
   }
 }
 
-// POST → usado pela página /unsubscribe (JSON: { email })
 export async function POST(req: Request) {
   try {
     const { email } = await req.json();
@@ -55,6 +75,23 @@ export async function POST(req: Request) {
       where: { email },
       data: { unsubscribedAt: new Date() },
     });
+
+    if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
+      console.warn('RESEND_API_KEY or NEWSLETTER_FROM not configured for unsubscribe');
+    } else {
+      await resend.emails.send({
+        from: process.env.NEWSLETTER_FROM!,
+        to: email,
+        subject: 'You have been unsubscribed ✨',
+        html: `
+          <p>Hi ${email},</p>
+          <p>You have been successfully unsubscribed from Quotes Newsletter.</p>
+          <p style="font-size:12px;color:#64748b">
+            If this was a mistake, you can subscribe again anytime on our website.
+          </p>
+        `,
+      });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
