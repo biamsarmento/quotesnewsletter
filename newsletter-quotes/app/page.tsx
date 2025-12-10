@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { gagalin, newYorker, garet, garetBold } from "./fonts";
+import { gagalin, garet, garetBold } from "./fonts";
 import Link from "next/link";
 
 export default function HomePage() {

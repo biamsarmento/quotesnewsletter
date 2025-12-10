@@ -76,7 +76,7 @@ export default function UnsubscribePage() {
           className={`${garet.className} text-[#f8eade] text-xl md:text-2xl text-center max-w-xl leading-relaxed mb-10 [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
         >
           Enter your email below and we&apos;ll stop sending your daily quotes.
-          <br /> No hard feelings—your inbox, your rules. 💌
+          <br /> No hard feelings — your inbox, your rules. 💌
         </h2>
       </div>
 
