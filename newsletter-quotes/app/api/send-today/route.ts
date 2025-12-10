@@ -51,7 +51,10 @@ export async function POST() {
     }
 
     // Fetch subscribers
-    const subscribers = await prisma.subscriber.findMany();
+    const subscribers = await prisma.subscriber.findMany({
+      where: { unsubscribedAt: null },
+    });
+
 
     if (!subscribers.length) {
       return NextResponse.json(
@@ -65,21 +68,26 @@ export async function POST() {
 
     const subject = 'Quote of the Day ✨';
 
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://quotesnewsletter.com';
+
     const html = (email: string) => `
       <div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px;">
         <p style="font-size: 14px; color: #64748b;">Hi ${email},</p>
         <p style="font-size: 16px; margin-top: 16px; margin-bottom: 8px;">
           <em>"${quote}"</em>
         </p>
-        <p style="font-size: 14px; color: #94a3b8;">— ${
-          author || 'Unknown author'
-        }</p>
+        <p style="font-size: 14px; color: #94a3b8;">— ${author || 'Unknown author'}</p>
         <hr style="margin: 24px 0; border: none; border-top: 1px solid #e2e8f0;" />
         <p style="font-size: 12px; color: #94a3b8;">
-          You received this email because you are subscribed to the Quotes Newsletter.
+          You are receiving this email because you subscribed to Quotes Newsletter.
+          If you no longer want to receive these emails,
+          <a href="${APP_URL}/api/unsubscribe?email=${encodeURIComponent(
+            email
+          )}" style="color:#6366f1;">click here to unsubscribe</a>.
         </p>
       </div>
     `;
+
 
     // Create Resend client inside POST (avoids module-load issues)
     const resend = new Resend(process.env.RESEND_API_KEY as string);
