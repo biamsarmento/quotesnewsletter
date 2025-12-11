@@ -13,14 +13,6 @@ export const metadata: Metadata = {
       "Your daily dose of inspiration — one uplifting quote in your inbox every morning.",
     url: APP_URL,
     siteName: "Quotes Newsletter",
-    images: [
-      {
-        url: "/opengraph-image.png",
-        width: 512,
-        height: 512,
-        alt: "Quotes Newsletter",
-      },
-    ],
     locale: "en_US",
     type: "website",
   },
