@@ -142,7 +142,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={handleSendToday}
-              className={`${garetBold.className} mt-4 w-full py-2 px-4 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#402d21] hover:border-[#75564d] border border-transparent transition`}
+              className={`${garetBold.className} mt-4 w-full py-2 px-4 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#f8eade] hover:text-[#402d21] border border-[#75564d] transition`}
             >
               Send today&apos;s newsletter (dev)
             </button>
