@@ -7,6 +7,11 @@ type QuoteApiResponse = {
   author: string;
 };
 
+const resend = new Resend(process.env.RESEND_API_KEY || '');
+
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL || 'https://quotesnewsletter.com';
+
 async function getTodayQuote() {
   const apiKey = process.env.NINJAS_API_KEY;
 
@@ -14,17 +19,12 @@ async function getTodayQuote() {
     throw new Error('NINJAS_API_KEY is not configured');
   }
 
-  console.log('🔹 NINJAS_API_KEY prefix:', apiKey.slice(0, 6));
-
-  // Using API Ninjas v2 — no query string required
   const res = await fetch('https://api.api-ninjas.com/v2/quoteoftheday', {
     headers: {
       'X-Api-Key': apiKey,
     },
     cache: 'no-store',
   });
-
-  console.log('🔹 API Ninjas status:', res.status);
 
   if (!res.ok) {
     const text = await res.text();
@@ -40,8 +40,175 @@ async function getTodayQuote() {
     throw new Error('No quote returned from API');
   }
 
-  console.log('✅ Quote received:', data[0]);
   return data[0];
+}
+
+function getQuoteEmailHtml(email: string, quote: string, author?: string) {
+  const safeAuthor = author || 'Unknown author';
+
+  return `
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Your quote of the day</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body style="margin:0; padding:0; background-color:#f8eade;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8eade; padding:24px 0;">
+
+        <!-- Banner -->
+        <tr>
+          <td align="center" style="padding:0 16px 16px 16px;">
+            <img
+              src="${APP_URL}/banner-desktop.png"
+              srcset="${APP_URL}/banner-mobile.png 480w, ${APP_URL}/banner-desktop.png 800w"
+              sizes="(max-width: 600px) 100vw, 600px"
+              alt="Quotes Newsletter"
+              width="600"
+              style="
+                display:block;
+                max-width:600px;
+                width:100%;
+                height:auto;
+                border-radius:24px;
+              "
+            />
+          </td>
+        </tr>
+
+        <!-- Brown Card -->
+        <tr>
+          <td align="center">
+            <table
+              width="100%"
+              cellpadding="0"
+              cellspacing="0"
+              style="
+                max-width:600px;
+                background-color:#402d21;
+                border-radius:24px;
+                padding:24px;
+                box-sizing:border-box;
+                font-family: Georgia, 'Times New Roman', serif;
+              "
+            >
+              <!-- Title -->
+              <tr>
+                <td style="text-align:center; padding-bottom:12px;">
+                  <h1 style="
+                    margin:0;
+                    color:#f8eade;
+                    font-size:24px;
+                    line-height:1.3;
+                  ">
+                    Your quote of the day ✨
+                  </h1>
+                </td>
+              </tr>
+
+              <!-- Greetings -->
+              <tr>
+                <td style="text-align:center; padding-bottom:16px;">
+                  <p style="
+                    margin:0;
+                    color:#f8eade;
+                    font-size:14px;
+                    line-height:1.6;
+                  ">
+                    Hi
+                    <a
+                      href="mailto:${email}"
+                      style="color:#6f8ca4; text-decoration:underline;"
+                    >
+                      ${email}
+                    </a>,
+                    here’s a little spark of inspiration for you today:
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Quotation -->
+              <tr>
+                <td style="
+                  background-color:rgba(120, 84, 69, 0.9);
+                  border-radius:16px;
+                  padding:20px 24px;
+                  color:#fefaf8;
+                  font-size:16px;
+                  line-height:1.7;
+                ">
+                  <p style="
+                    margin:0 0 12px 0;
+                    font-style:italic;
+                  ">
+                    “${quote}”
+                  </p>
+                  <p style="
+                    margin:0;
+                    font-size:14px;
+                    opacity:0.9;
+                    text-align:right;
+                  ">
+                    — ${safeAuthor}
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Text -->
+              <tr>
+                <td style="padding-top:18px; text-align:center;">
+                  <p style="
+                    margin:0;
+                    color:#f8eade;
+                    font-size:13px;
+                    line-height:1.6;
+                  ">
+                    Take a moment to breathe, reflect, and carry this thought with you
+                    through the rest of your day.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding-top:20px; text-align:center;">
+                  <p style="
+                    margin:0;
+                    color:#f8eade;
+                    font-size:11px;
+                    line-height:1.6;
+                    opacity:0.8;
+                  ">
+                    You’re receiving this email because you subscribed to
+                    <a
+                      href="${APP_URL}"
+                      style="color:#f8eade; text-decoration:underline; margin:0 4px;"
+                    >
+                      Quotes Newsletter
+                    </a>.
+                    <br/>
+                    If this wasn’t you, you can safely
+                    <a
+                      href="${APP_URL}/api/unsubscribe?email=${encodeURIComponent(
+                        email
+                      )}"
+                      style="color:#f8eade; text-decoration:underline; margin-left:4px;"
+                    >
+                      unsubscribe
+                    </a>
+                    at any time.
+                  </p>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+  </html>
+  `;
 }
 
 export async function POST() {
@@ -55,7 +222,6 @@ export async function POST() {
       where: { unsubscribedAt: null },
     });
 
-
     if (!subscribers.length) {
       return NextResponse.json(
         { ok: true, sent: 0, message: 'No subscribers to send to' },
@@ -68,37 +234,13 @@ export async function POST() {
 
     const subject = 'Quote of the Day ✨';
 
-    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://quotesnewsletter.com';
-
-    const html = (email: string) => `
-      <div style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 16px;">
-        <p style="font-size: 14px; color: #64748b;">Hi ${email},</p>
-        <p style="font-size: 16px; margin-top: 16px; margin-bottom: 8px;">
-          <em>"${quote}"</em>
-        </p>
-        <p style="font-size: 14px; color: #94a3b8;">— ${author || 'Unknown author'}</p>
-        <hr style="margin: 24px 0; border: none; border-top: 1px solid #e2e8f0;" />
-        <p style="font-size: 12px; color: #94a3b8;">
-          You are receiving this email because you subscribed to Quotes Newsletter.
-          If you no longer want to receive these emails,
-          <a href="${APP_URL}/api/unsubscribe?email=${encodeURIComponent(
-            email
-          )}" style="color:#6366f1;">click here to unsubscribe</a>.
-        </p>
-      </div>
-    `;
-
-
-    // Create Resend client inside POST (avoids module-load issues)
-    const resend = new Resend(process.env.RESEND_API_KEY as string);
-
     await Promise.all(
       subscribers.map((sub) =>
         resend.emails.send({
           from: process.env.NEWSLETTER_FROM!,
           to: sub.email,
           subject,
-          html: html(sub.email),
+          html: getQuoteEmailHtml(sub.email, quote, author),
         })
       )
     );
