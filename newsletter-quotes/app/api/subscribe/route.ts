@@ -1,4 +1,3 @@
-// app/api/subscribe/route.ts
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
@@ -20,7 +19,7 @@ function getWelcomeEmailHtml(email: string) {
     <body style="margin:0; padding:0; background-color:#f8eade;">
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8eade; padding:24px 0;">
         
-        <!-- Hero banner (fora da caixinha marrom) -->
+        <!-- banner -->
         <tr>
           <td align="center" style="padding:0 16px 16px 16px;">
             <img
@@ -40,7 +39,7 @@ function getWelcomeEmailHtml(email: string) {
           </td>
         </tr>
 
-        <!-- Card marrom -->
+        <!-- Brown Card -->
         <tr>
           <td align="center">
             <table
@@ -56,7 +55,7 @@ function getWelcomeEmailHtml(email: string) {
                 font-family: Georgia, 'Times New Roman', serif;
               "
             >
-              <!-- Título -->
+              <!-- Title -->
               <tr>
                 <td style="text-align:center; padding-bottom:12px;">
                   <h1 style="
@@ -71,7 +70,7 @@ function getWelcomeEmailHtml(email: string) {
                 </td>
               </tr>
 
-              <!-- Subtítulo com email estilizado -->
+              <!-- Subtitle -->
               <tr>
                 <td style="text-align:center; padding-bottom:16px;">
                   <p style="
@@ -96,7 +95,7 @@ function getWelcomeEmailHtml(email: string) {
                 </td>
               </tr>
 
-              <!-- Bloco principal -->
+              <!-- Main -->
               <tr>
                 <td style="
                   background-color:rgba(120, 84, 69, 0.9);
@@ -117,7 +116,7 @@ function getWelcomeEmailHtml(email: string) {
                 </td>
               </tr>
 
-              <!-- Citação -->
+              <!-- Quotation -->
               <tr>
                 <td style="padding-top:18px; text-align:center;">
                   <p style="
@@ -134,7 +133,7 @@ function getWelcomeEmailHtml(email: string) {
                 </td>
               </tr>
 
-              <!-- Footer com unsubscribe clicável -->
+              <!-- Footer -->
                <tr>
                 <td style="padding-top:20px; text-align:center;">
                   <p style="
