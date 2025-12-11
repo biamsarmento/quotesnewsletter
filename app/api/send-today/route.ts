@@ -1,3 +1,4 @@
+// app/api/send-today/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
@@ -211,41 +212,47 @@ function getQuoteEmailHtml(email: string, quote: string, author?: string) {
   `;
 }
 
+/**
+ * Função reaproveitável para enviar a newsletter do dia.
+ * Vai ser usada tanto pelo endpoint POST quanto pelo cron.
+ */
+export async function sendQuoteToAllSubscribers() {
+  if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
+    throw new Error('RESEND_API_KEY or NEWSLETTER_FROM is not configured');
+  }
+
+  // Fetch subscribers
+  const subscribers = await prisma.subscriber.findMany({
+    where: { unsubscribedAt: null },
+  });
+
+  if (!subscribers.length) {
+    return { ok: true, sent: 0, message: 'No subscribers to send to' };
+  }
+
+  // Fetch quote of the day
+  const { quote, author } = await getTodayQuote();
+
+  const subject = 'Quote of the Day ✨';
+
+  await Promise.all(
+    subscribers.map((sub) =>
+      resend.emails.send({
+        from: process.env.NEWSLETTER_FROM!,
+        to: sub.email,
+        subject,
+        html: getQuoteEmailHtml(sub.email, quote, author),
+      })
+    )
+  );
+
+  return { ok: true, sent: subscribers.length };
+}
+
 export async function POST() {
   try {
-    if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
-      throw new Error('RESEND_API_KEY or NEWSLETTER_FROM is not configured');
-    }
-
-    // Fetch subscribers
-    const subscribers = await prisma.subscriber.findMany({
-      where: { unsubscribedAt: null },
-    });
-
-    if (!subscribers.length) {
-      return NextResponse.json(
-        { ok: true, sent: 0, message: 'No subscribers to send to' },
-        { status: 200 }
-      );
-    }
-
-    // Fetch quote of the day
-    const { quote, author } = await getTodayQuote();
-
-    const subject = 'Quote of the Day ✨';
-
-    await Promise.all(
-      subscribers.map((sub) =>
-        resend.emails.send({
-          from: process.env.NEWSLETTER_FROM!,
-          to: sub.email,
-          subject,
-          html: getQuoteEmailHtml(sub.email, quote, author),
-        })
-      )
-    );
-
-    return NextResponse.json({ ok: true, sent: subscribers.length });
+    const result = await sendQuoteToAllSubscribers();
+    return NextResponse.json(result);
   } catch (error: any) {
     console.error('send-today error:', error);
     return NextResponse.json(

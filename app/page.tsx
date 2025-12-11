@@ -11,27 +11,27 @@ export default function HomePage() {
     "idle" | "loading" | "success" | "error"
   >("idle");
 
-  async function handleSendToday() {
-    try {
-      const res = await fetch("/api/send-today", {
-        method: "POST",
-      });
+  // async function handleSendToday() {
+  //   try {
+  //     const res = await fetch("/api/send-today", {
+  //       method: "POST",
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      if (!res.ok) {
-        console.error("send-today error response:", data);
-        alert(data?.error ?? "Error while sending newsletter");
-        return;
-      }
+  //     if (!res.ok) {
+  //       console.error("send-today error response:", data);
+  //       alert(data?.error ?? "Error while sending newsletter");
+  //       return;
+  //     }
 
-      console.log("send-today response", data);
-      alert(`Newsletter sent! (${data.sent ?? 0} subscriber(s))`);
-    } catch (error) {
-      console.error(error);
-      alert("Error sending newsletter (check console and terminal)");
-    }
-  }
+  //     console.log("send-today response", data);
+  //     alert(`Newsletter sent! (${data.sent ?? 0} subscriber(s))`);
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Error sending newsletter (check console and terminal)");
+  //   }
+  // }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -139,13 +139,13 @@ export default function HomePage() {
               </p>
             )}
 
-            <button
+            {/* <button
               type="button"
               onClick={handleSendToday}
               className={`${garetBold.className} mt-4 w-full py-2 px-4 rounded-lg text-xs font-medium cursor-pointer text-[#f8eade] bg-[#75564d] hover:bg-[#f8eade] hover:text-[#402d21] border border-[#75564d] transition`}
             >
               Send today&apos;s newsletter (dev)
-            </button>
+            </button> */}
           </div>
         </div>
         <Link href="/unsubscribe" className="mt-3 block">
