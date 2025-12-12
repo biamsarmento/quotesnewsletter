@@ -43,7 +43,7 @@ export default function HomePage() {
         backgroundBlendMode: "luminosity",
       }}
     >
-      <div className="header flex self-center md:self-start gap-2">
+      <div className="header flex self-center md:self-start mb-15 sm:mb-0 gap-2">
         <Image
           src="/logo-beige-blue.png"
           alt="Quotes Newsletter logo"
