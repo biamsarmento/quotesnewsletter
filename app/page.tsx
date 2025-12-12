@@ -75,7 +75,7 @@ export default function HomePage() {
           &quot;The best way to get started is to quit talking and begin
           doing.&quot; - Walt Disney
         </h3>
-        <div className="subscribe flex flex-col mb-10">
+        <div className="subscribe flex flex-col">
           <div className="max-w-lg w-full p-8 rounded-[50px] bg-[#402d21] border border-[#75564d]">
             <h1
               className={`${gagalin.className} text-2xl sm:text-4xl font-semibold mb-4 justify-self-center text-[#f8eade] [text-shadow:0_0_1px_#402d21,0_0_2px_#402d21,0_0_3px_#402d21]`}
