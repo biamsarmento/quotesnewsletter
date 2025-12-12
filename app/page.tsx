@@ -118,14 +118,6 @@ export default function HomePage() {
             )}
           </div>
         </div>
-        <Link href="/unsubscribe" className="mt-3 block">
-          <button
-            type="button"
-            className={`${garetBold.className} w-full py-2 px-4 rounded-lg text-lg font-medium cursor-pointer bg-[#402d21] text-[#f8eade] hover:bg-[#f8eade] hover:text-[#402d21] border border-[#402d21] transition`}
-          >
-            Unsubscribe
-          </button>
-        </Link>
       </div>
     </main>
   );
