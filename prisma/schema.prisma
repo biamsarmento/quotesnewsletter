@@ -14,3 +14,9 @@ model Subscriber {
   unsubscribedAt DateTime?
 }
 
+model DailySend {
+  day       String   @id 
+  createdAt DateTime @default(now())
+}
+
+

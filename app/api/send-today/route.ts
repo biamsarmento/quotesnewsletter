@@ -1,4 +1,3 @@
-// app/api/send-today/route.ts
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Resend } from 'resend';
@@ -12,6 +11,14 @@ const resend = new Resend(process.env.RESEND_API_KEY || '');
 
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL || 'https://quotesnewsletter.com';
+
+function todayKeyUTC() {
+  const d = new Date();
+  const yyyy = d.getUTCFullYear();
+  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(d.getUTCDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`; // "YYYY-MM-DD"
+}
 
 async function getTodayQuote() {
   const apiKey = process.env.NINJAS_API_KEY;
@@ -212,16 +219,26 @@ function getQuoteEmailHtml(email: string, quote: string, author?: string) {
   `;
 }
 
-/**
- * Função reaproveitável para enviar a newsletter do dia.
- * Vai ser usada tanto pelo endpoint POST quanto pelo cron.
- */
+const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+
 export async function sendQuoteToAllSubscribers() {
   if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM) {
     throw new Error('RESEND_API_KEY or NEWSLETTER_FROM is not configured');
   }
 
-  // Fetch subscribers
+  const day = todayKeyUTC();
+
+  try {
+    await prisma.dailySend.create({ data: { day } });
+  } catch (e: any) {
+    if (e?.code === 'P2002') {
+      return { ok: true, sent: 0, message: 'Already sent today' };
+    }
+    throw e;
+  }
+
   const subscribers = await prisma.subscriber.findMany({
     where: { unsubscribedAt: null },
   });
@@ -235,21 +252,39 @@ export async function sendQuoteToAllSubscribers() {
 
   const subject = 'Quote of the Day ✨';
 
-  await Promise.all(
-    subscribers.map((sub) =>
-      resend.emails.send({
-        from: process.env.NEWSLETTER_FROM!,
-        to: sub.email,
-        subject,
-        html: getQuoteEmailHtml(sub.email, quote, author),
-      })
-    )
-  );
+  // await Promise.all(
+  //   subscribers.map((sub) =>
+  //     resend.emails.send({
+  //       from: process.env.NEWSLETTER_FROM!,
+  //       to: sub.email,
+  //       subject,
+  //       html: getQuoteEmailHtml(sub.email, quote, author),
+  //     })
+  //   )
+  // );
+
+  for (const sub of subscribers) {
+    await resend.emails.send({
+      from: process.env.NEWSLETTER_FROM!,
+      to: sub.email,
+      subject,
+      html: getQuoteEmailHtml(sub.email, quote, author),
+    });
+
+    await sleep(650);
+  }
+
 
   return { ok: true, sent: subscribers.length };
 }
 
 export async function POST() {
+  // const auth = req.headers.get('authorization');
+
+  // if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // }
+
   try {
     const result = await sendQuoteToAllSubscribers();
     return NextResponse.json(result);
