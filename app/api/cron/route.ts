@@ -2,15 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { sendQuoteToAllSubscribers } from '../send-today/route';
 
 export async function GET(req: NextRequest) {
-  // const auth = req.headers.get('Authorization');
+  const auth = req.headers.get('Authorization');
 
-  // if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  // }
-
-  const isVercelCron = req.headers.get('x-vercel-cron') === '1';
-
-  if (!isVercelCron) {
+  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
