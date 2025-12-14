@@ -247,21 +247,9 @@ export async function sendQuoteToAllSubscribers() {
     return { ok: true, sent: 0, message: 'No subscribers to send to' };
   }
 
-  // Fetch quote of the day
   const { quote, author } = await getTodayQuote();
 
   const subject = 'Quote of the Day ✨';
-
-  // await Promise.all(
-  //   subscribers.map((sub) =>
-  //     resend.emails.send({
-  //       from: process.env.NEWSLETTER_FROM!,
-  //       to: sub.email,
-  //       subject,
-  //       html: getQuoteEmailHtml(sub.email, quote, author),
-  //     })
-  //   )
-  // );
 
   for (const sub of subscribers) {
     await resend.emails.send({
@@ -279,11 +267,6 @@ export async function sendQuoteToAllSubscribers() {
 }
 
 export async function POST() {
-  // const auth = req.headers.get('authorization');
-
-  // if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  // }
 
   try {
     const result = await sendQuoteToAllSubscribers();
