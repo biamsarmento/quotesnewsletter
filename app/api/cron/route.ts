@@ -8,9 +8,9 @@ export async function GET(req: NextRequest) {
   //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   // }
 
-  const token = req.nextUrl.searchParams.get('token');
+  const isVercelCron = req.headers.get('x-vercel-cron') === '1';
 
-  if (token !== process.env.CRON_SECRET) {
+  if (!isVercelCron) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
