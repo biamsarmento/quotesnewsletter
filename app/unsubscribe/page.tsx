@@ -103,7 +103,7 @@ export default function UnsubscribePage() {
             <input
               type="email"
               required
-              placeholder="youremail@example.com"
+              placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`${garetBold.className} w-full px-3 py-2 rounded-lg text-[#402d21] bg-[#f8eade] border border-[#402d21] text-sm outline-none focus:ring-2 focus:ring-[#fefaf8]`}
